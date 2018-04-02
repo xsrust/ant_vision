@@ -1,0 +1,7 @@
+{
+  "num_workers":2,
+  "greyscaleThreshold":150,
+  "kernelOpen":8,
+  "kernelClose":4,
+  "cameraStream":0
+}
