@@ -1,9 +1,10 @@
 # ant_vision
 Housing for Honors Project Code
 
-##To run the code, simply run the following:
+## To run the code, simply run the following:
 `import ant_vision`
 `ant_vision.start()`
+ctrl-c will terminate the program
 
 ###
 some options are configureable through options.json
@@ -12,7 +13,7 @@ some options are configureable through options.json
 - size of open/close kernels(will need tuned per-installation)
 - webcam opencv id (0 by default)
 
-##Dependancies are as follows (experimantal setup):
+## Dependancies are as follows (experimantal setup):
 python >= 3.4 (3.6.4)
 opencv >= 3.0.0 (3.4.0)
 numpy
