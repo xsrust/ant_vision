@@ -13,7 +13,7 @@ Housing for Honors Project Code
 - webcam opencv id (0 by default)
 
 ## Dependancies are as follows (experimantal setup):
-python >= 3.4 (3.6.4)
-opencv >= 3.0.0 (3.4.0)
-numpy
-matplotlib
+- python >= 3.4 (3.6.4)
+- opencv >= 3.0.0 (3.4.0)
+- numpy
+- matplotlib
