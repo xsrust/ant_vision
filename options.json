@@ -1,5 +1,5 @@
 {
-  "num_workers":2,
+  "numWorkers":2,
   "greyscaleThreshold":150,
   "kernelOpen":8,
   "kernelClose":4,

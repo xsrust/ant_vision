@@ -16,7 +16,7 @@ def start(options='options.json'):
     # initialize variables based on passed options
     json_dat = open(options)
     options = json.load(json_dat)
-    num_workers = options["num_workers"]
+    num_workers = options["numWorkers"]
     stream_no = options["cameraStream"]
     # create ThreadedCameraStream to read from
     stream = tcs.ThreadedCameraStream(stream_no)
