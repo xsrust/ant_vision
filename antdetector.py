@@ -6,10 +6,10 @@ class AntDetector:
     def __init__(self,options):
         # init re-used vars for processing and pass to function
         self.thresh = options["greyscaleThreshold"]
-        self.kernel_size_op = options["kernelOpen"]
-        self.kernel_size_cl = options["kernelClose"]
-        self.kernel_op = np.ones((self.kernel_size_op,self.kernel_size_op),np.uint8)
-        self.kernel_cl = np.ones((self.kernel_size_cl,self.kernel_size_cl),np.uint8)
+        kernel_size_op = options["kernelOpen"]
+        kernel_size_cl = options["kernelClose"]
+        self.kernel_op = np.ones((kernel_size_op,kernel_size_op),np.uint8)
+        self.kernel_cl = np.ones((kernel_size_cl,kernel_size_cl),np.uint8)
 
     """
     Launched in another process
@@ -26,7 +26,7 @@ class AntDetector:
             try:
                 # check if new item on queue
                 img = work_q.get_nowait()
-                print("GOT AN IMAGE {0}".format(worker_num))
+                #print("GOT AN IMAGE {0}".format(worker_num))
                 results = self.process(img)
                 results.append(worker_num)
                 result_q.put_nowait(results)
@@ -41,10 +41,11 @@ class AntDetector:
     returns an array with the centerx, centery, and the angle of the line in degrees
     """
     def process(self, img):
+        # note, img is greyscale
         results = []
         # Threshhold dark ant against white background
-        im_gr = cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
-        _, img_bin = cv2.threshold(im_gr, self.thresh, 255, cv2.THRESH_BINARY_INV)
+        _, img_bin = cv2.threshold(img, self.thresh, 255, cv2.THRESH_BINARY_INV)
+        #img_bin = img
         # Transformations to clean up the image
         #   opening to remove external noise
         #   closings to remove internal noise

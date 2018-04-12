@@ -1,0 +1,11 @@
+{
+  "numWorkers":2,
+  "greyscaleThreshold":150,
+  "kernelOpen":20,
+  "kernelClose":10,
+  "cameraStream":0,
+  "resX":2240,
+  "resY":1680,
+  "number":500,
+  "repititions":100
+}

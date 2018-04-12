@@ -13,15 +13,14 @@ import antdetector
 Takes in the path to a json file with options
 Begins reading from the specified webcam and processing images
 """
-def start(options='options.json'):
+def start(options='test_options.json'):
     # initialize variables based on passed options
     json_dat = open(options)
     options = json.load(json_dat)
     num_workers = options["numWorkers"]
     stream_no = options["cameraStream"]
     # create ThreadedCameraStream to read from
-    #stream = testcam.TestCam('Carpenter-Ant.jpg',1000,False)
-    stream = tcs.ThreadedCameraStream(stream_no)
+    stream = testcam.TestCam('images/wood_ant.jpg',10,True,800,600)
     stream.start()
     # variable to compare to the flipped bit in ThreadedCameraStream
     last = False
@@ -30,6 +29,10 @@ def start(options='options.json'):
     # Create processes to work off the queue
     processes = []
     ad = antdetector.AntDetector(options)
+    # aquire ground truth
+    base = ad.process(stream.img)
+    stream.set_center(base[0],base[1])
+    print(base)
     #mp.set_start_method('spawn')
     for i in range(num_workers):
         processes.append(mp.Process(target=ad.work_and_report,args=(work_q,result_q,i)))
@@ -37,20 +40,22 @@ def start(options='options.json'):
         processes[-1].start()
     out_frames, proc_frames = 0,0
     time.sleep(2)
-    starts = []
-    ends = []
-    while proc_frames < 500 :
+    transs = []
+    results = []
+    while proc_frames < 1000 :
         try:
-            img, new  = stream.read()
+            img, new, trans  = stream.read()
             if(last != new):
+                transs.append(trans)
                 last = new
-                starts.append(time.time())
+                #starts.append(time.time())
                 work_q.put_nowait(img)
                 out_frames += 1
                 #print("img on queue")
             ret = result_q.get_nowait()
-            ends.append(time.time())
+            #ends.append(time.time())
             proc_frames += 1
+            results.append(ret)
             # since Queue.get_nowait() throws an  exception on empty queue
             #   ret will always have a value
             #printout(ret,time.time()-starttime,out_frames,proc_frames)
@@ -61,8 +66,16 @@ def start(options='options.json'):
     stream.stop()
     for process in processes:
         process.terminate()
-    for i in range(0,len(starts)):
-        print(ends[i]-starts[i])
+    for i in range(0,len(transs)):
+        print("FRAME %d " % i)
+        print("ExpectedX: {}, got {}".format((base[0] + transs[i][0]),results[i][0]))
+        print("ExpectedY: {}, got {}".format((base[1] + transs[i][1]),results[i][1]))
+        print("ExpectedRot: {}, got {}".format((base[2][0] - transs[i][2]),results[i][2]))
+    with open('test_results/ant_acc_test.csv','w') as file:
+        file.write("{},{},{}\n".format("ErrorX","ErrorY","ErrorRot"))
+        for i in range(0,len(transs)):
+            file.write("{},{},{}\n".format(
+            (base[0] + transs[i][0] - results[i][0]),(base[1] + transs[i][1] - results[i][1]),(base[2][0] - transs[i][2] - results[i][2][0])))
 
 def printout(ret,timedif,out_frames,proc_frames):
     # NOTE: HERE we do something with the returned position of the ant

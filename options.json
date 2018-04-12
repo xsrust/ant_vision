@@ -1,7 +1,9 @@
 {
-  "numWorkers":2,
+  "numWorkers":3,
   "greyscaleThreshold":150,
   "kernelOpen":8,
   "kernelClose":4,
-  "cameraStream":0
+  "cameraStream":0,
+  "resX":800,
+  "resY":600
 }
